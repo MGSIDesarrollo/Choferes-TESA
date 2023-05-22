@@ -44,11 +44,11 @@ class _LoginState extends State<Login> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
               children: <Widget>[
-               Icon(
+               /* Icon(
                   Icons.wifi_off,
                   color: Colors.white,
-                ),
-                Expanded (child: Text("     En este momento no tienes conexión a Internet"))
+                ),*/
+                Text("En este momento no tienes conexión a Internet")
               ]
           ),
         ),
@@ -192,11 +192,14 @@ class _LoginState extends State<Login> {
                             //alignment: Alignment.topCenter,
                             minWidth: 230,
                             child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
+                              ),
                               child: Text('Ingresar', style: TextStyle(color: Colors.white),),
                               onPressed: () {
                                 if(_formKey.currentState!.validate()){
-                                  print("hola vanessa: " +usrCtr!.text +' '+ pssCtr!.text);
+                                  //print("hola vanessa: " +usrCtr!.text +' '+ pssCtr!.text);
                                   loginReq(usrCtr!.text, pssCtr!.text).then((onValue) async {
                                     if (onValue!=null) {
 

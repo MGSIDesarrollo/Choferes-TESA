@@ -19,6 +19,8 @@ class GastoD {
   String? hora;
   String? pxk;
   String? vehiculo_id;
+  String? folio;
+
 
 
   GastoD({
@@ -39,6 +41,7 @@ class GastoD {
     this.hora,
     this.pxk,
     this.vehiculo_id,
+    this.folio,
 
   });
 
@@ -61,13 +64,14 @@ class GastoD {
     hora: json["hora"],
     pxk: json["pxk"],
     vehiculo_id: json["vehiculo_id"],
+    folio: json["folio"],
 
   );
 
   /// Returns a string whit basic person info.
   @override
   String toString() {
-    return 'gastosid: $gastosid, gasto_id: $gasto_id, concepto: $concepto, tipo_pago: $tipo_pago, costo: $costo, proveedor: $proveedor, litros: $litros, precio_litro: $precio_litro, kilometraje: $kilometraje, comentario: $comentario, fecha_gasto: $fecha_gasto, km_ini: $km_ini, rendimiento: $rendimiento, recorrido: $recorrido, hora: $hora, pxk: $pxk, vehiculo_id: $vehiculo_id';
+    return 'gastosid: $gastosid, gasto_id: $gasto_id, concepto: $concepto, tipo_pago: $tipo_pago, costo: $costo, proveedor: $proveedor, litros: $litros, precio_litro: $precio_litro, kilometraje: $kilometraje, comentario: $comentario, fecha_gasto: $fecha_gasto, km_ini: $km_ini, rendimiento: $rendimiento, recorrido: $recorrido, hora: $hora, pxk: $pxk, vehiculo_id: $vehiculo_id, folio: $folio';
   }
 
   Map<String, dynamic> toJSON()=>{
@@ -87,6 +91,7 @@ class GastoD {
     'recorrido': recorrido,
     'hora' : hora,
     'pxk': pxk,
-    'vehiculo_id': vehiculo_id
+    'vehiculo_id': vehiculo_id,
+    'folio':folio
   };
 }

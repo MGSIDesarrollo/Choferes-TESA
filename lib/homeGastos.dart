@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'AddGastos.dart';
 import 'DBlocal/consultas.dart';
 import 'controller/Usuario.dart';
+import 'funciones/alertas.dart';
 import 'funciones/colores.dart';
 import 'funciones/sesiones.dart';
 import 'gastos/controllerGastos.dart';
@@ -40,6 +41,7 @@ class _HomeGastosState extends State<HomeGastos> {
 
   Future userList2(String id)async{
     list2 = await Controllerconsulta().queryDataGastosDetails(id.toString());
+    print('Detalles gastos    ${list2.toString()}');
     setState(() {loading2=false;});
     //print(list);
   }
@@ -115,17 +117,15 @@ class _HomeGastosState extends State<HomeGastos> {
                   "Proveedor:  ${data[index]['proveedor']}\nCosto:  \$${data[index]['costo']}\nLitros:  ${data[index]['litros']}\nFecha:  ${data[index]['fecha_gasto']}",
                   style: TextStyle(color: Colors.black, fontSize: 14.5),
                 ),
-                onTap:(){
+                onTap:()async {
                   //print ('presionaste el gasto numero:' + data[index]['gastosid']);
-                  userList2(data[index]['gastosid']);
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => gastosDetails(
-                      detalles:list2?[0],
-                      id_user: widget.info.id.toString()
-                  )
-                  )
-                  );
-                  print(data[index]['gastosid']);
-                  print(list2?[0]);
+                  await userList2(data[index]['gastosid']);
+                  list2 == null
+                      ? showToast(context, 'Espere unos segundos y vuelva a intentarlo',)
+                      : Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) =>
+                          gastosDetails(detalles:list2?[0], id_user: widget.info.id.toString())));
+                  //print(data[index]['gastosid']);
+                  //print(list2?[0]);
                 }
             ),
             // ],
@@ -184,6 +184,7 @@ class _HomeGastosState extends State<HomeGastos> {
                       hora: value.hora,
                       pxk: value.pxk,
                       vehiculo_id: value.vehiculo_id,
+                      folio: value.folio,
                     );
 
                     Controllerconsulta().addDataGastosDetails(gastosD).then((value){

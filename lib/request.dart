@@ -118,6 +118,31 @@ Future<List<dynamic>?> getViajes(String id) async {
   return null;
 }
 
+Future<List<dynamic>?> getViajesDel(String id) async {
+
+  var url = PRE_URL + '/getViajesDel.php';
+
+  var response = await http.post(Uri.parse(url), body:{
+    'id': id
+  });
+  if(response.statusCode!=200){
+    return null;
+  }
+
+  var data;
+
+  try {
+    data = jsonDecode(response.body);
+  } catch (e) {
+    return null;
+  }
+
+  if(data['status']==200){
+    return data['data'];
+  }
+  return null;
+}
+
 Future<ViajeD?> getviajeDetails(String id, String id_viaje) async {
 
   var url = PRE_URL + '/getViajesDetails.php';
@@ -168,7 +193,7 @@ Future<dynamic> update_kIni(String id, String id_viaje, String km_inicial, Strin
   return data['data'];
 }
 
-Future<dynamic> update_kFin(String id, String id_viaje, String km_fin, String fecha_hora,String pasajeros, String comentarios) async{
+Future<dynamic> update_kFin(String id, String id_viaje, String km_fin, String fecha_hora,String pasajeros, String comentarios, String pasajerosF) async{
   var url = PRE_URL+'/update_kfin.php';
   var response = await http.post(Uri.parse(url), body: {
     "id": id,
@@ -176,7 +201,8 @@ Future<dynamic> update_kFin(String id, String id_viaje, String km_fin, String fe
     "km_fin": km_fin,
     "fecha_hora": fecha_hora,
     "pasajeros":pasajeros,
-    "comentarios":comentarios
+    "comentarios":comentarios,
+    "pasajerosF":pasajerosF
   });
 
   if(response==null) {
@@ -378,7 +404,7 @@ Future<GastoD?> getGastoDetails(String id, String idgasto) async {
 }
 
 //function para resgistrar las visitas
-Future<GastoD?> guardarGastos(String id, String proveedor, String precio_litro, String kilometraje, String observacion, String fecha_hora, String litros, String id_vehiculo, String pago, String concepto)async{
+Future<GastoD?> guardarGastos(String id, String proveedor, String precio_litro, String kilometraje, String observacion, String fecha_hora, String litros, String id_vehiculo, String pago, String concepto, String folio)async{
 
   var url = PRE_URL + '/guardarGastos.php';
 
@@ -393,6 +419,7 @@ Future<GastoD?> guardarGastos(String id, String proveedor, String precio_litro, 
     'precio_litro': precio_litro,
     'proveedor': proveedor,
     'fecha_hora': fecha_hora,
+    'folio': folio,
 
   });
 

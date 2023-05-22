@@ -18,6 +18,7 @@ class ViajeD {
   String? kil_fin;
   String? vehiculosid;
   String? idcliente;
+  String? tipo;
 
   ViajeD({
     this.viajesid,
@@ -36,6 +37,7 @@ class ViajeD {
     this.kil_fin,
     this.vehiculosid,
     this.idcliente,
+    this.tipo,
   });
 
   /// Tranforms JSON to [ViajeD]
@@ -56,12 +58,13 @@ class ViajeD {
     kil_fin: json["kil_fin"],
     vehiculosid: json["vehiculosid"],
     idcliente: json["idcliente"],
+    tipo: json["tipo"],
   );
 
   /// Returns a string whit basic person info.
   @override
   String toString() {
-    return 'idcliente: $idcliente, vehiculosid $vehiculosid, viajesid: $viajesid, viaje_id: $viaje_id, nombre_ruta: $nombre_ruta, fecha: $fecha, hora_prev: $hora_prev, vehiculo_id: $vehiculo_id, ruta_id: $ruta_id, cliente: $cliente, centro: $centro, comentario: $comentario, horario_inicio: $horario_inicio, horario_final: $horario_final, kil_ini: $kil_ini, kil_fin: $kil_fin';
+    return 'idcliente: $idcliente, vehiculosid $vehiculosid, viajesid: $viajesid, viaje_id: $viaje_id, nombre_ruta: $nombre_ruta, fecha: $fecha, hora_prev: $hora_prev, vehiculo_id: $vehiculo_id, ruta_id: $ruta_id, cliente: $cliente, centro: $centro, comentario: $comentario, horario_inicio: $horario_inicio, horario_final: $horario_final, kil_ini: $kil_ini, kil_fin: $kil_fin, tipo $tipo';
   }
 
   Map<String, dynamic> toJSON()=>{
@@ -81,6 +84,7 @@ class ViajeD {
     'kil_fin': kil_fin,
     'vehiculosid' : vehiculosid,
     'idcliente': idcliente,
+    'tipo': tipo,
 
   };
 }

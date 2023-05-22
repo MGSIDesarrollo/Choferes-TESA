@@ -1,14 +1,6 @@
-import 'package:choferes/request.dart';
-import 'package:choferes/viajes/controllerDetailsV.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'DBlocal/consultas.dart';
-import 'conexion/conn.dart';
-import 'funciones/alertas.dart';
 import 'funciones/colores.dart';
-import 'funciones/sesiones.dart';
 
 class gastosDetails extends StatefulWidget {
   //final Detalles detalles;
@@ -50,6 +42,7 @@ class _gastosDetailsPageState extends State<gastosDetails> {
                   _rowText('Concepto: ', '${widget.detalles.concepto.toString()}'),
                   _rowText('Fecha de carga:', '${widget.detalles.fecha_gasto.toString()}'),
                   _rowText('Hora de carga:', '${widget.detalles.hora.toString()}'),
+                  _rowText('Folio:', '${widget.detalles.folio.toString()}'),
                   _observaciones('Comentarios:   ', widget.detalles.comentario.toString()),
                   SizedBox(height: 15,),
                   titulo('Información detallada'),

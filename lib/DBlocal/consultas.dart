@@ -82,6 +82,18 @@ class Controllerconsulta {
     return result;
   }
 
+  Future<int> delDataTravel(String id_viaje) async {
+    var dbclient = await connection.db;
+    int result =0;
+    try {
+      result = await dbclient!.delete(
+          SqfliteDatabaseViaje.TaskTable, where: 'viaje_id = ?', whereArgs: [id_viaje]);
+    } catch (e) {
+      print(e.toString());
+    }
+    return result;
+  }
+
   //consultar si ya existe un viaje
   Future <int> queryCountTravel(String id) async {
     var dbclient = await connection.db;
@@ -118,7 +130,7 @@ class Controllerconsulta {
 
     int travelList = 0;
     // try {
-     travelList = Sqflite.firstIntValue(await dbclient!.rawQuery("SELECT viajesid FROM $table order by viajesid DESC"))!;
+     travelList = Sqflite.firstIntValue(await dbclient!.rawQuery("SELECT viajesid FROM $table order by viajesid DESC")) ?? 0;
     //return travelList.isNotEmpty ? travelList.map((e) => Viaje.fromJSON(e)).toList() : null;
 
      return travelList;
@@ -390,7 +402,7 @@ class Controllerconsulta {
     return gastosList;
   }
 
-  //traernos los detalles de los gastos
+  //traernos el ultimo id de los gastos de la base de datos
   Future<int> queryDataGastosID() async {
     var dbclient = await conectarg.db;
     var table = await tablag;

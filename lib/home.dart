@@ -55,14 +55,19 @@ class _HomeState extends State<Home> {
 
   //proceso para subir y actualizar viajes y gastos en mysql
   Future syncToMysql() async {
-
+    List<dynamic>? eliminados = await getViajesDel(_arguments!['datos'].id.toString()); //trae los IDs de viajes eliminados en el crm
+    if (eliminados != null) {
+      for (String id in eliminados) {
+        Controllerconsulta().delDataTravel(id); //Elimina en la BD local los registros con los IDs encontrados
+      }
+    }
     await SyncInsertG().buscarInfoGastos().then((gastosList) async {
       //print('gastos:' + gastosList.toString());
       if(gastosList.length > 0){
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 backgroundColor: Colors.blueGrey,
-                content: Expanded (child: Text("No cierre la aplicacion. Estamos sincronizando los datos..."))
+                content: Text("No cierre la aplicacion. Estamos sincronizando los datos...")
             ));
 
         await SyncInsertG().saveToMysqlGastos(gastosList, _arguments!['datos'].id.toString()).then((_) async {
@@ -74,7 +79,7 @@ class _HomeState extends State<Home> {
 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               backgroundColor: Colors.blueGrey,
-              content: Expanded (child: Text("Sincronización de gastos realizada correctamente"))
+              content: Text("Sincronización de gastos realizada correctamente")
           ));
         });
       }else{
@@ -83,14 +88,13 @@ class _HomeState extends State<Home> {
     });
 
     await SyncInsertV().fetchAllInfoViajes().then((viajesList) async {
-      print('viajes:' + viajesList.toString());
+      print('viajes:   ' + viajesList.toString());
       if(viajesList.length > 0){
-        
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 backgroundColor: Colors.blueGrey,
-                content: Row(children: [Expanded (child: Text("No cierre la aplicacion. Estamos sincronizando los datos..."))
-            ])));
+                content: Text("No cierre la aplicacion. Estamos sincronizando los datos...")
+            ));
         await SyncInsertV().saveToMysqlViajes(viajesList, _arguments!['datos'].id.toString()).then((_) async {
 
           for (var i = 0; i < viajesList.length; i++) {
@@ -104,8 +108,8 @@ class _HomeState extends State<Home> {
           }
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               backgroundColor: Colors.blueGrey,
-              content: Row(children: [Expanded (child: Text("Sincronización de viajes realizada correctamente"))
-          ])));
+              content: Text("Sincronización de viajes realizada correctamente")
+          ));
         });
       }else{
         print("no hay datos de viajes por sincronizar");
@@ -133,11 +137,11 @@ class _HomeState extends State<Home> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
               children: <Widget>[
-                Icon(
+                /*Icon(
                   Icons.wifi_off,
                   color: Colors.white,
-                ),
-                Expanded (child: Text("     En este momento no tienes conexión a Internet"))
+                ),*/
+                Text("En este momento no tienes conexión a Internet")
               ]
           ),
         ),
@@ -384,6 +388,9 @@ class _HomeState extends State<Home> {
                            'save': false
                          }
                      );
+                     setState(() {
+                       HomeViajes(info: _arguments!['datos']);
+                     });
                    }),
                 ],
                 bottom: TabBar(

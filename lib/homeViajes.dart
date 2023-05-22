@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:choferes/AddViajes.dart';
 import 'package:choferes/controller/Usuario.dart';
+import 'package:choferes/funciones/alertas.dart';
 import 'package:choferes/request.dart';
 import 'package:choferes/viajes/controllerDetailsV.dart';
 import 'package:choferes/viajes/controllerViajes.dart';
@@ -11,7 +12,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import '../funciones/alertas.dart';
 
 import 'DBlocal/consultas.dart';
 import 'conexion/conn.dart';
@@ -80,7 +80,7 @@ class _HomeViajesState extends State<HomeViajes> {
                 onTap:(){
                   //print ('presionaste el viaje numero1:' + data[index]['viajesid']);
                   getviajeDetails(widget.info.id.toString(), data[index]['viajesid']).then((value){
-                     print('revs detalles: ' + value.toString());
+                     //print('revs detalles: ' + value.toString());
                     /*Navigator.pushNamed(
                         context,
                         '/viajeDetails',
@@ -96,7 +96,7 @@ class _HomeViajesState extends State<HomeViajes> {
                     )
                     )
                     );
-                    print(value);
+                    //print(value);
                   });
                 }
             ),
@@ -129,20 +129,16 @@ class _HomeViajesState extends State<HomeViajes> {
                   "Fecha inicio previsto:  ${data[index]['fecha']}\nHora inicio previsto:  ${data[index]['hora_prev']}",
                   style: TextStyle(color: Colors.black, fontSize: 16),
                 ),
-                onTap:(){
+                onTap:()async {
                   //print ('presionaste el viaje numero1:' + data[index]['viajesid']);
-                  userList2(data[index]['viajesid']);
-                  if (list2 == null || list2?[0] == null){
-                    showToast(context, 'Cargando datos, espere unos segundos y vuelva a intentarlo.', 2, Colors.blueGrey, 0);
-                  }else{
-                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => viajesDetails(
-                        detalles:list2?[0],
-                        info: widget.info
-                    ))
-                    );
-                    print(data[index]['viajesid']);
-                    print(list2?[0]);
-                  }
+                  await userList2(data[index]['viajesid']);
+                  list2 == null ? showToast(context, 'Espere unos segundos y vuelva a intentarlo',) :
+                  (list2![0].kil_fin == '') ? Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => viajesDetails(
+                      detalles:list2?[0],
+                      info: widget.info
+                  ))) : showToast(context, 'Este viaje ya ha sido finalizado');
+                  //print(data[index]['viajesid']);
+                  //print(list2?[0]);
                 }
             ),
             // ],
@@ -156,6 +152,7 @@ class _HomeViajesState extends State<HomeViajes> {
   Widget _tareas()=>FutureBuilder(
     future: getViajes(widget.info.id.toString()),
     builder: (BuildContext context, AsyncSnapshot snapshot) {
+      print('my id   ${widget.info.id.toString()}');
 
       if(snapshot.hasData) {
         if (snapshot.data.length==0) return emptyResponse;
@@ -170,13 +167,13 @@ class _HomeViajesState extends State<HomeViajes> {
               Viaje viaje = Viaje(viajesid: snapshot.data[i]['viajesid'].toString(), viaje_id: snapshot.data[i]['viaje_id'].toString(), fecha: snapshot.data[i]['fecha'].toString(), hora_prev: snapshot.data[i]['hora_prev'].toString(), vehiculo_id: snapshot.data[i]['vehiculo_id'].toString(), ruta_id: snapshot.data[i]['ruta_id'].toString(), accountname: snapshot.data[i]['accountname'].toString());
               Controllerconsulta().addDataTravel(viaje).then((value){
                 if(value>0){
-                  print("correcta inserción del viaje");
+                  //print("correcta inserción del viaje");
 
                   getviajeDetails(widget.info.id.toString(), snapshot.data[i]['viajesid'].toString()).then((value){
 
-                    print('detalles del viaje horario: ' +value!.horario_inicio.toString());
+                    //print('detalles del viaje horario: ' +value!.horario_inicio.toString());
                     ViajeD viajeD = ViajeD(
-                      viajesid: value.viajesid,
+                      viajesid: value!.viajesid,
                       viaje_id: value.viaje_id,
                       nombre_ruta: value.nombre_ruta,
                       fecha: value.fecha,
@@ -192,16 +189,17 @@ class _HomeViajesState extends State<HomeViajes> {
                       kil_fin: value.kil_fin,
                       vehiculosid: value.vehiculosid,
                       idcliente: value.idcliente,
+                      tipo: value.tipo
                     );
 
                     Controllerconsulta().addDataDetails(viajeD).then((value){
 
-                      if (value>0) {
+                      /*if (value>0) {
                         print('valor en el insert: ' + value.toString());
                         print("correcta inserción de detalles");
                       }else{
                         print("fallo insercion detalles");
-                      }
+                      }*/
                     });
 
                   });

@@ -1,5 +1,6 @@
 
 import 'package:choferes/controller/Usuario.dart';
+import 'package:choferes/funciones/alertas.dart';
 import 'package:choferes/request.dart';
 import 'package:choferes/viajes/controllerClientes.dart';
 import 'package:choferes/viajes/controllerDetailsV.dart';
@@ -438,7 +439,8 @@ class _AddViajesState extends State<AddViajes> {
                                       keyboardType: TextInputType.number,
                                       maxLength: 100,
                                       maxLines: null,
-                                      textAlign: TextAlign.left
+                                      textAlign: TextAlign.left,
+
                                   ),
                                   width: MediaQuery.of(context).size.width*.85,
                                 ),
@@ -448,7 +450,7 @@ class _AddViajesState extends State<AddViajes> {
                             width: 150,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.green,
+                                backgroundColor: Colors.green,
                               ),
                               child: Text('Guardar e iniciar', style: TextStyle(color: Colors.white), textAlign : TextAlign.center),
                               onPressed: ()async{
@@ -460,90 +462,125 @@ class _AddViajesState extends State<AddViajes> {
                                 print('cliente: ' + clientes_nombre.toString());
                                 print('id_user: '+widget.id.toString() +', cliente: '+ valueDropdownClientes!.toString() + ', ruta: ' +  valueDropdownRutas!.toString() + ', vehiculo: ' +valueDropdownAutos!.toString() + ', comentarios: ' + _comentarios!.text + ', Kilometraje_ini: ' + _kmInicial!.text + ', fecha: ' + DateTime.now().toString());
                                 */
+                                if(_kmInicial!.text != '' ) {
+                                  if (_formKey.currentState!.validate()) {
+                                    showToast(context, 'Espere...');
+                                    Conn.isInternet().then((connection) {
+                                      if (connection) {
+                                        guardarViajes(
+                                            widget.info.id.toString(),
+                                            valueDropdownClientes!.toString(),
+                                            valueDropdownRutas!.toString(),
+                                            valueDropdownAutos!.toString(),
+                                            _comentarios!.text,
+                                            DateTime.now().toString(),
+                                            _kmInicial!.text).then((value) {
+                                          print('valueViaje: ' +
+                                              value.toString());
 
-                                if(_formKey.currentState!.validate()){
-
-                                  Conn.isInternet().then((connection){
-                                    if (connection) {
-                                      guardarViajes(widget.info.id.toString(), valueDropdownClientes!.toString(), valueDropdownRutas!.toString(), valueDropdownAutos!.toString(), _comentarios!.text, DateTime.now().toString(), _kmInicial!.text).then((value){
-                                        print('valueViaje: '+value.toString());
-
-                                        Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            '/home',
-                                                (Route<dynamic> route) => false,
-                                            arguments: {
-                                              'datos': widget.info,
-                                              'save': false
-                                            }
-                                        );
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => viajesDetails(
-                                            detalles: value,
-                                            info: widget.info
-                                        )
-                                        )
-                                        );
-                                      });
-                                    }else{
-
-                                     Controllerconsulta().queryDataTravelID().then((value){
-                                       var idviajep = value+1;
-
-                                      final splitted = DateTime.now().toString().split(' ');
-
-                                      Viaje viaje = Viaje(viajesid: idviajep.toString(), viaje_id: 'local', fecha: splitted[0], hora_prev: splitted[1], vehiculo_id: vehiculos_nombre.toString(), ruta_id: ruta_nombre.toString(), accountname: clientes_nombre.toString());
-
-                                      Controllerconsulta().addDataTravel(viaje).then((value){
-                                          if(value>0){
-                                          print("correcta inserción del viaje n");
-
-                                          //print('detalles del viaje: ' +value!.viajesid.toString());
-                                          ViajeD viajeD = ViajeD(
-                                            viajesid: idviajep.toString(),
-                                            viaje_id: 'local',
-                                            nombre_ruta: ruta_nombre.toString(),
-                                            fecha: splitted[0],
-                                            hora_prev: splitted[1],
-                                            vehiculo_id: vehiculos_nombre.toString(),
-                                            ruta_id: valueDropdownRutas!.toString(),
-                                            cliente: clientes_nombre.toString(),
-                                            comentario: _comentarios!.text,
-                                            centro: '',
-                                            horario_inicio: splitted[1],
-                                            horario_final: '',
-                                            kil_ini: _kmInicial!.text,
-                                            kil_fin: '',
-                                            vehiculosid: valueDropdownAutos!.toString(),
-                                            idcliente: valueDropdownClientes!.toString(),
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              '/home',
+                                                  (Route<
+                                                  dynamic> route) => false,
+                                              arguments: {
+                                                'datos': widget.info,
+                                                'save': false
+                                              }
                                           );
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (
+                                                  BuildContext context) =>
+                                                  viajesDetails(
+                                                      detalles: value,
+                                                      info: widget.info
+                                                  )
+                                              )
+                                          );
+                                        });
+                                      } else {
+                                        Controllerconsulta().queryDataTravelID().then((value) {
+                                          var idviajep = value + 1;
 
-                                          Controllerconsulta().addDataDetails(viajeD).then((value){
-                                            if (value>0) {
-                                              print("correcta inserción de detalles n");
+                                          final splitted = DateTime.now().toString().split(' ');
 
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                  context,
-                                                  '/home',
-                                                      (Route<dynamic> route) => false,
-                                                  arguments: {
-                                                    'datos': widget.info,
-                                                    'save': false
-                                                  }
+                                          Viaje viaje = Viaje(
+                                              viajesid: idviajep.toString(),
+                                              viaje_id: 'local',
+                                              fecha: splitted[0],
+                                              hora_prev: splitted[1],
+                                              vehiculo_id: vehiculos_nombre
+                                                  .toString(),
+                                              ruta_id: ruta_nombre.toString(),
+                                              accountname: clientes_nombre
+                                                  .toString());
+
+                                          Controllerconsulta().addDataTravel(viaje).then((value) {
+                                            if (value > 0) {
+                                              print("correcta inserción del viaje n");
+
+                                              //print('detalles del viaje: ' +value!.viajesid.toString());
+                                              ViajeD viajeD = ViajeD(
+                                                  viajesid: idviajep.toString(),
+                                                  viaje_id: 'local',
+                                                  nombre_ruta: ruta_nombre.toString(),
+                                                  fecha: splitted[0],
+                                                  hora_prev: splitted[1],
+                                                  vehiculo_id: vehiculos_nombre.toString(),
+                                                  ruta_id: valueDropdownRutas!.toString(),
+                                                  cliente: clientes_nombre.toString(),
+                                                  comentario: _comentarios!.text,
+                                                  centro: '',
+                                                  horario_inicio: splitted[1],
+                                                  horario_final: '',
+                                                  kil_ini: _kmInicial!.text,
+                                                  kil_fin: '',
+                                                  vehiculosid: valueDropdownAutos!.toString(),
+                                                  idcliente: valueDropdownClientes!.toString(),
+                                                  tipo: ''
                                               );
-                                            }else{
-                                              print("fallo insercion detalles n");
+
+                                              Controllerconsulta().addDataDetails(viajeD).then((value) {
+                                                if (value > 0) {
+                                                  showToast(context, 'Viaje creado e iniciado');
+                                                  print(
+                                                      "correcta inserción de detalles n");
+
+                                                  Navigator.pushNamedAndRemoveUntil(context,
+                                                    '/home',
+                                                        (Route<dynamic> route) => false,
+                                                    arguments: {'datos': widget.info,
+                                                      'save': false,},
+                                                  );
+                                                } else {
+                                                  showToast(context, 'Ocurrió un error');
+                                                  print("fallo insercion detalles n");
+                                                }
+                                              });
+                                            } else {
+                                              showToast(context, 'Ocurrió un error');
+                                              // print('fallo la insercion del viaje n');
                                             }
                                           });
-
-                                          }else {
-                                            print('fallo la insercion del viaje n');
-                                          }
-                                      });
-                                     });
-                                    }
-                                  });
-                                    print('id_user: '+widget.info.id.toString() +', cliente: '+ valueDropdownClientes!.toString() + ', ruta: ' +  valueDropdownRutas!.toString() + ', vehiculo: ' +valueDropdownAutos!.toString() + ', comentarios: ' + _comentarios!.text + ', Kilometraje_ini: ' + _kmInicial!.text + ', fecha: ' + DateTime.now().toString());
-                                 // });
+                                        });
+                                      }
+                                    });
+                                    print('id_user: ' +
+                                        widget.info.id.toString() +
+                                        ', cliente: ' +
+                                        valueDropdownClientes!.toString() +
+                                        ', ruta: ' +
+                                        valueDropdownRutas!.toString() +
+                                        ', vehiculo: ' +
+                                        valueDropdownAutos!.toString() +
+                                        ', comentarios: ' + _comentarios!.text +
+                                        ', Kilometraje_ini: ' +
+                                        _kmInicial!.text + ', fecha: ' +
+                                        DateTime.now().toString());
+                                    // });
+                                  }
+                                }else{
+                                  showToast(context, 'El kilometraje inicial es necesario para continuar',);
                                 }
                               },
                             ),

@@ -46,7 +46,8 @@ class SyncInsertG {
         'comentario': cambiosGastos[i].comentario.toString(),
         'fecha_gasto' : cambiosGastos[i].fecha_gasto.toString(),
         'hora' : cambiosGastos[i].hora.toString(),
-        'vehiculo_id': cambiosGastos[i].vehiculo_id.toString()
+        'vehiculo_id': cambiosGastos[i].vehiculo_id.toString(),
+        'folio': cambiosGastos[i].folio.toString(),
       };
       //i++;
       final response = await http.post(Uri.parse(PRE_URL + '/sincronizadorGastos.php') ,body: data);

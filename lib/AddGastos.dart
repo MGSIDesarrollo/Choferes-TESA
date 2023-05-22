@@ -1,4 +1,5 @@
 
+import 'package:choferes/funciones/alertas.dart';
 import 'package:choferes/gastos/controllerGastoDetails.dart';
 import 'package:choferes/gastos/controllerGastos.dart';
 import 'package:choferes/request.dart';
@@ -33,6 +34,7 @@ class _AddGastosState extends State<AddGastos> {
 
   TextEditingController? _costo;
   TextEditingController? _litros;
+  TextEditingController? _folio;
   TextEditingController? _comentarios;
   TextEditingController? _kilometraje;
   String? valueDropdownAutos;
@@ -71,6 +73,8 @@ class _AddGastosState extends State<AddGastos> {
     _comentarios=TextEditingController();
     _costo=TextEditingController();
     _litros=TextEditingController();
+    _folio=TextEditingController();
+
   }
 
   void vehiculosOffConnection()async{
@@ -502,6 +506,40 @@ class _AddGastosState extends State<AddGastos> {
                                                       .circular(8.0),
                                                 ),
                                                 border: OutlineInputBorder(),
+                                                labelText: 'Folio',
+                                                labelStyle: TextStyle(
+                                                    color: Colors.blueGrey),
+                                              ),
+                                              controller: _folio,
+                                              keyboardType: TextInputType.text,
+                                              maxLength: 100,
+                                              maxLines: null,
+                                              textAlign: TextAlign.left,
+                                          ),
+
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width * .90,
+                                        ),
+                                      )
+                                  ),
+                                  Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 21,
+                                            right: 21,
+                                            bottom: 1.0),
+                                        child: Container(
+                                          child: TextField(
+                                              decoration: InputDecoration(
+                                                enabledBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1),
+                                                  borderRadius: BorderRadius
+                                                      .circular(8.0),
+                                                ),
+                                                border: OutlineInputBorder(),
                                                 labelText: 'Comentarios',
                                                 labelStyle: TextStyle(
                                                     color: Colors.blueGrey),
@@ -521,48 +559,63 @@ class _AddGastosState extends State<AddGastos> {
                                     width: 150,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: Colors.green,
+                                        backgroundColor: Colors.green,
                                       ),
                                       child: Text('Guardar',
                                           style: TextStyle(color: Colors.white),
                                           textAlign: TextAlign.center),
                                       onPressed: () async {
-                                        print('id_user: ' + widget.info.id.toString() + ', concepto: ' + valueDropdownConcepto!.toString() + ', pago: ' + valueDropdownPago!.toString() + ', vehiculo: ' + valueDropdownAutos!.toString() + ', comentarios: ' + _comentarios!.text + ', proveedor: ' + valueDropdownProveedor!.toString() + ', fecha: ' + DateTime.now().toString() + ', litros: ' + _litros!.text + ', kilometraje: ' + _kilometraje!.text + ', precioxlitro: ' + _costo!.text);
+                                        //print('id_user: ' + widget.info.id.toString() + ', concepto: ' + valueDropdownConcepto!.toString() + ', pago: ' + valueDropdownPago!.toString() + ', vehiculo: ' + valueDropdownAutos!.toString() + ', comentarios: ' + _comentarios!.text + ', proveedor: ' + valueDropdownProveedor!.toString() + ', fecha: ' + DateTime.now().toString() + ', litros: ' + _litros!.text + ', kilometraje: ' + _kilometraje!.text + ', precioxlitro: ' + _costo!.text + ', folio: ' + _folio!.text);
 
                                       var idgastosn = await Controllerconsulta().queryDataGastosID();
-                                        idgastosn = idgastosn+1;
-                                      //print(idviajep);
+                                        //print(idgastosn);
+                                         idgastosn = idgastosn+1;
+                                     // print(idgastosn);
 
                                         if (_formKey.currentState!.validate()) {
-                                          Conn.isInternet().then((connection) {
-                                            if (connection) {
-                                              guardarGastos(widget.info.id.toString(), valueDropdownProveedor!.toString(), _costo!.text, _kilometraje!.text, _comentarios!.text, DateTime.now().toString(), _litros!.text, valueDropdownAutos!.toString(), valueDropdownPago!.toString(), valueDropdownConcepto!.toString()).then((value) {
-                                                print('valueGasto: ' + value.toString());
+                                          if (!(valueDropdownAutos == null || valueDropdownConcepto == null || valueDropdownPago == null|| valueDropdownProveedor == null || _kilometraje!.text == '' || _litros!.text == '' || _costo!.text == '' || _folio!.text == '')) {
+                                            Conn.isInternet().then((
+                                                connection) {
+                                              if (connection) {
+                                                guardarGastos(
+                                                    widget.info.id.toString(),
+                                                    valueDropdownProveedor!.toString(),
+                                                    _costo!.text,
+                                                    _kilometraje!.text,
+                                                    _comentarios!.text,
+                                                    DateTime.now().toString(),
+                                                    _litros!.text,
+                                                    valueDropdownAutos!.toString(),
+                                                    valueDropdownPago!.toString(),
+                                                    valueDropdownConcepto!.toString(),
+                                                    _folio!.text).then((value) {
+                                                  print('valueGasto: ' + value.toString());
 
-                                              Navigator.pushNamedAndRemoveUntil(context,
-                                                '/home',
-                                                (Route<dynamic> route) => false,
-                                                  arguments: {
-                                                  'datos': widget.info,
-                                                  'save': false
-                                                  }
-                                              );
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => gastosDetails(
-                                                detalles: value,
-                                                  id_user: widget.info.id.toString()
-                                                )));
-                                              });
+                                                  Navigator.pushNamedAndRemoveUntil(context,
+                                                      '/home', (Route<dynamic> route) => false,
+                                                      arguments: {
+                                                        'datos': widget.info,
+                                                        'save': false
+                                                      }
+                                                  );
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext context) =>
+                                                              gastosDetails(
+                                                                  detalles: value,
+                                                                  id_user: widget.info.id.toString())));
+                                                });
+                                              }
+                                              else {
+                                                final splitted = DateTime.now().toString().split(' ');
 
-                                            }else{
-                                            final splitted = DateTime.now().toString().split(' ');
+                                                int? litrop = int.parse(_litros!.text);
+                                                int? pxl = int.parse(_costo!.text);
 
-                                            int? litrop = int.parse(_litros!.text);
-                                            int? pxl = int.parse(_costo!.text);
+                                                var total = pxl * litrop;
+                                                //print('total: ' + total.toString());
 
-                                            var total = pxl * litrop;
-                                            //print('total: ' + total.toString());
-
-                                            Gastos gastos = Gastos(
+                                                Gastos gastos = Gastos(
                                                     gastosid: idgastosn.toString(),
                                                     gasto_id: 'local',
                                                     concepto: valueDropdownConcepto!.toString(),
@@ -571,49 +624,53 @@ class _AddGastosState extends State<AddGastos> {
                                                     litros: _litros!.text,
                                                     fecha_gasto: splitted[0],
                                                     vehiculo_id: valueDropdownAutos!.toString()
-                                            );
+                                                );
 
-                                            Controllerconsulta().addDataGastos(gastos).then((value){
-                                              if(value>0){
-                                                print("correcta inserción del gasto n");
+                                                Controllerconsulta().addDataGastos(gastos).then((value) {
+                                                  if (value > 0) {
+                                                    print("correcta inserción del gasto n");
 
-                                                //print('detalles del viaje: ' +value!.viajesid.toString());
-                                                GastoD gastod = GastoD(
-                                                    gastosid: idgastosn.toString(),
-                                                    gasto_id: 'local',
-                                                    concepto: valueDropdownConcepto!.toString(),
-                                                    tipo_pago: valueDropdownPago!.toString(),
-                                                    costo: total.toString(),
-                                                    proveedor: valueDropdownProveedor!.toString(),
-                                                    litros: _litros!.text,
-                                                    precio_litro: _costo!.text,
-                                                    kilometraje: _kilometraje!.text,
-                                                    comentario: _comentarios!.text,
-                                                    fecha_gasto: splitted[0],
-                                                    km_ini: '0',
-                                                    rendimiento: '0',
-                                                    recorrido: '0',
-                                                    hora: splitted[1],
-                                                    pxk: '0',
-                                                    vehiculo_id: valueDropdownAutos!.toString(),
+                                                    //print('detalles del viaje: ' +value!.viajesid.toString());
+                                                    GastoD gastod = GastoD(
+                                                        gastosid: idgastosn.toString(),
+                                                        gasto_id: 'local',
+                                                        concepto: valueDropdownConcepto!.toString(),
+                                                        tipo_pago: valueDropdownPago!.toString(),
+                                                        costo: total.toString(),
+                                                        proveedor: valueDropdownProveedor!.toString(),
+                                                        litros: _litros!.text,
+                                                        precio_litro: _costo!.text,
+                                                        kilometraje: _kilometraje!.text,
+                                                        comentario: _comentarios!.text,
+                                                        fecha_gasto: splitted[0],
+                                                        km_ini: '0',
+                                                        rendimiento: '0',
+                                                        recorrido: '0',
+                                                        hora: splitted[1],
+                                                        pxk: '0',
+                                                        vehiculo_id: valueDropdownAutos!.toString(),
+                                                        folio: _folio!.text
                                                     );
 
-                                                Controllerconsulta().addDataGastosDetails(gastod).then((value){
-                                                  if (value>0) {
-                                                    print("correcta inserción de detalles gasto n");
-                                                  }else{
-                                                    print("fallo insercion detalles gastos n");
+                                                    Controllerconsulta().addDataGastosDetails(gastod).then((value) {
+                                                      if (value > 0) {
+                                                        print("correcta inserción de detalles gasto n");
+                                                      } else {
+                                                        print("fallo insercion detalles gastos n");
+                                                      }
+                                                    });
+                                                  } else {
+                                                    print(
+                                                        'fallo la insercion del gasto n');
                                                   }
                                                 });
-
-                                              }else {
-                                                print('fallo la insercion del gasto n');
                                               }
                                             });
+                                          }else{
+                                            showToast(context, 'Complete los campos vacíos para continuar');
                                           }
-                                        });
-                                      }
                                         }
+                                      }
 
                                     ),
                                   ),

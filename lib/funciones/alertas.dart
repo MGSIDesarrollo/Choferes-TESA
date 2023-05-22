@@ -102,7 +102,7 @@ _showDialog(BuildContext context, var alert){
   );
 }
 
-showToast(BuildContext context, String message, int duration, Color background, int align){
+showToast(BuildContext context, String message, {int duration=2, Color background=Colors.lightBlue, int align=1}){
   ToastContext().init(context);
   Toast.show(message, duration: duration, backgroundColor: background, gravity: align);
 }

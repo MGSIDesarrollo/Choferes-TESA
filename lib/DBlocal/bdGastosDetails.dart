@@ -32,7 +32,7 @@ class SqfliteDatabaseDetailsGastos {
     Directory directory = await getApplicationDocumentsDirectory();
     String dbPathbd = join(directory.path,'gastodetalles.bd');
     print('path dgasto: '+dbPathbd);
-    var open = await openDatabase(dbPathbd,version: 1,
+    var open = await openDatabase(dbPathbd,version: 2,
         onCreate: (Database db,int version)async{
           await db.execute('''
         CREATE TABLE $DGastosTable (
@@ -52,12 +52,13 @@ class SqfliteDatabaseDetailsGastos {
           recorrido TEXT,
           hora TEXT,
           pxk TEXT,
-          vehiculo_id TEXT
+          vehiculo_id TEXT,
+          folio TEXT
           )''');
         },
         onUpgrade: (Database db, int oldversion,int newversion)async{
           if (oldversion<newversion) {
-            print("Version Actualizada 1");
+            print("Version Actualizada 2");
           }
         }
     );

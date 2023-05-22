@@ -37,24 +37,20 @@ class _viajesDetailsPageState extends State<viajesDetails> {
   TextEditingController? _comentarios;
   TextEditingController? _comentariosF;
   TextEditingController? _pasajerosF;
+  TextEditingController? _pasajeros;
 
 
   Timer? timer;
 
   @override
   void initState(){
-    print(widget.detalles);
     super.initState();
-    _kmInicial = TextEditingController();
-    _kmFinal = TextEditingController();;
-    _comentarios = TextEditingController();
-    _comentariosF = TextEditingController();
-    _pasajerosF= TextEditingController();
-
-    _kmFinal!.text = '';
-    _pasajerosF!.text = '';
-
-    //_pasajeros=TextEditingController();
+    _kmInicial=TextEditingController();
+    _kmFinal=TextEditingController();
+    _comentarios=TextEditingController();
+    _comentariosF=TextEditingController();
+    _pasajerosF=TextEditingController();
+    _pasajeros=TextEditingController();
   }
 
   Widget _body2(){
@@ -129,10 +125,10 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                               children: <Widget>[
                                 ElevatedButton(
                                     onPressed: () async{
-                                     // print('kmini: ' + _kmInicial!.text);
+                                      print('kmini: ' + _kmInicial!.text);
                                       // showAlertSelectDialog(context, (){
                                       //Navigator.of(context).pop();
-                                      if (_kmInicial!.text != null || _kmInicial!.text != 'null' || _kmInicial!.text != '' || _kmInicial!.text != 0 || _kmInicial!.text != '0') {
+                                      if (_kmInicial!.text != 'null' && _kmInicial!.text != '' ) {
                                         //UPDATE MySQL
                                         update_kIni(widget.info.id.toString(), widget.detalles.viajesid.toString(), _kmInicial!.text, DateTime.now().toString(), _comentarios!.text).then((res){
 
@@ -158,7 +154,10 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                                             horario_inicio: DateTime.now().toString(),
                                             horario_final: widget.detalles.horario_final.toString(),
                                             kil_ini: _kmInicial!.text,
-                                            kil_fin: widget.detalles.kil_fin.toString()
+                                            kil_fin: widget.detalles.kil_fin.toString(),
+                                            vehiculosid: widget.detalles.vehiculosid,
+                                            idcliente: widget.detalles.idcliente,
+                                            tipo: widget.detalles.tipo
                                         );
                                         Controllerconsulta().updateDataTravel(viajeD).then((value) {
                                           showSimpleDialog(context, 'Alerta', 'Cambio exitoso');
@@ -171,9 +170,12 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                                             print('se inserto bien la actualizacion');
                                           }
                                         });
+                                        showToast(context, 'Viaje iniciado');
+
 
                                       }else {
-                                        showAlertDialog(context, 'Atención', 'Solo es posible iniciar el viaje si la hora de inicio no esta vacia');
+                                        showToast(context, 'El kilometrae inicial es necesario para continuar');
+                                        //showAlertDialog(context, 'Atención', 'Solo es posible iniciar el viaje si la hora de inicio no esta vacia');
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -187,10 +189,13 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                           ]
                       );
                     }else{
-                      if(widget.detalles.horario_final.toString() == null || widget.detalles.horario_final.toString() == 'null' || widget.detalles.horario_final.toString() == ''){
-                        return Column(
-                            children: <Widget>[
-                                  Container(
+                      if(widget.detalles.horario_final.toString() == 'null' || widget.detalles.horario_final.toString() == '' /*|| widget.detalles.horario_final.toString() == null*/){
+
+                        if(widget.detalles.tipo.toString() == 'Redondo' || widget.detalles.tipo.toString() == 'REDONDO'){
+                          print('tipo redondo: '+ widget.detalles.tipo.toString());
+                          return Column(
+                              children: <Widget>[
+                                Container(
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 25, right: 25, bottom: 1.0),
                                       child: Container(
@@ -200,7 +205,7 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                                               enabledBorder: UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.blueGrey),
                                               ),
-                                             // border: OutlineInputBorder(),
+                                              // border: OutlineInputBorder(),
                                               labelText: '  Kilometraje final',
                                               labelStyle: TextStyle(color: Colors.blueGrey),
                                             ),
@@ -213,8 +218,203 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                                         width: MediaQuery.of(context).size.width*.70,
                                       ),
                                     )
-                                 ),
-                              /*
+                                ),
+                                /*
+                              Container(
+                                width: MediaQuery.of(context).size.width*.70,
+                                child: SearchChoices.single(
+                                  underline: Container(
+                                    height: 1.0,
+                                    decoration: const BoxDecoration(
+                                        border:
+                                        Border(bottom: BorderSide(color: Colors.blueGrey, width: 1.0))),
+                                  ),
+                                  hint: Text('Pasajeros', style: TextStyle(color: Colors.blueGrey ),),
+                                  items: <String>['0', '1', '2', '3', '4', '5','6', '7', '8', '9', '10','11', '12', '13', '14', '15','16', '17', '18', '19', '20','21', '22', '23', '24', '25','26', '27', '28', '29','30','31', '32', '33', '34', '35','36', '37', '38', '39','40'].map<DropdownMenuItem<String>>((val){
+                                    return DropdownMenuItem<String>(
+                                        value: val,
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width*.45,
+                                          child: Text(
+                                            val,
+                                            softWrap: true,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        )
+                                    );
+                                  }).toList(),
+                                  value: _pasajerosF,
+                                  onChanged: (newValue){
+                                    setState(() {
+                                      _pasajerosF = newValue.toString();
+                                    });
+                                  },
+                                  isExpanded: true,
+                                ),
+                                height: 79,
+                              ),
+                              */
+                                Container(
+                                  child: TextField(
+                                    decoration:  InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.blueGrey),
+                                      ),
+                                      labelText: '  Pasajeros entrada',
+                                      labelStyle: TextStyle(color: Colors.blueGrey ),
+                                    ),
+                                    controller: _pasajeros,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 2,
+                                    // maxLines: null,
+                                    textAlign: TextAlign.left,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  width: MediaQuery.of(context).size.width*.70,
+                                ),
+                                Container(
+                                  child: TextField(
+                                    decoration:  InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.blueGrey),
+                                      ),
+                                      labelText: '  Pasajeros salida',
+                                      labelStyle: TextStyle(color: Colors.blueGrey ),
+                                    ),
+                                    controller: _pasajerosF,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 2,
+                                    // maxLines: null,
+                                    textAlign: TextAlign.left,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                  width: MediaQuery.of(context).size.width*.70,
+                                ),
+                                Container(
+                                  child: TextField(
+                                      decoration:  InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.blueGrey),
+                                        ),
+                                        labelText: '  Comentarios',
+                                        labelStyle: TextStyle(color: Colors.blueGrey ),
+                                      ),
+                                      controller: _comentariosF,
+                                      keyboardType: TextInputType.text,
+                                      maxLength: 500,
+                                      maxLines: null,
+                                      textAlign: TextAlign.left
+                                  ),
+                                  width: MediaQuery.of(context).size.width*.70,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    ElevatedButton(
+                                        onPressed: () async{
+                                          if(_pasajerosF!.text == '' || _kmFinal!.text == ''){
+                                            showToast(context, 'Complete los camposde kilometraje y pasajeros para poder finalizar su viaje',);
+                                          }else {
+                                            var parse = int.parse(
+                                                _pasajerosF!.text);
+                                            if (parse > 40) {
+                                              print('mayor a 40');
+                                              showSimpleDialog(
+                                                  context, ' Alerta',
+                                                  'El número de pasajeros debe ser menor a 40');
+                                            } else {
+                                              print('menor a 40');
+                                              //showSimpleDialog(context, 'Alerta', 'menor');
+                                              //_redirect();
+                                              //}//else
+                                              //Navigator.of(context).pop();
+                                              //UPDATE MySQL
+                                              update_kFin(widget.info.id.toString(), widget.detalles.viajesid.toString(),
+                                                  _kmFinal!.text, DateTime.now().toString(), _pasajerosF!.text,
+                                                  _comentariosF!.text, _pasajeros!.text).then((res) {
+                                                print('se registro correctamente :' + DateTime.now().toString());
+                                                setState(() {
+                                                  widget.detalles.horario_final = DateTime.now().toString();
+                                                  widget.detalles.kil_fin = _kmFinal!.text;
+                                                });
+                                              });
+                                              //UPDATE LOCAL
+                                              ViajeD viajeD = ViajeD(
+                                                  viajesid: widget.detalles.viajesid,
+                                                  viaje_id: widget.detalles.viaje_id,
+                                                  nombre_ruta: widget.detalles.nombre_ruta,
+                                                  fecha: widget.detalles.fecha,
+                                                  hora_prev: widget.detalles.hora_prev,
+                                                  vehiculo_id: widget.detalles.vehiculo_id,
+                                                  ruta_id: widget.detalles.ruta_id,
+                                                  cliente: widget.detalles.cliente,
+                                                  comentario: widget.detalles.comentario,
+                                                  centro: widget.detalles.centro,
+                                                  horario_inicio: widget.detalles.horario_inicio,
+                                                  horario_final: DateTime.now().toString(),
+                                                  kil_ini: widget.detalles.kil_ini,
+                                                  kil_fin: _kmFinal!.text,
+                                                  vehiculosid: widget.detalles.vehiculosid,
+                                                  idcliente: widget.detalles.idcliente,
+                                                  tipo: widget.detalles.tipo
+                                              );
+                                              Controllerconsulta().updateDataTravel(viajeD).then((value) {
+                                                showSimpleDialog(context, 'Alerta', 'Cambio exitoso');
+                                                _redirect();
+                                                print('valor en update' + value.toString());
+                                                if (value > 0) {
+                                                  setState(() {
+                                                    widget.detalles.horario_final = DateTime.now().toString();
+                                                    widget.detalles.kil_fin = _kmFinal!.text;
+                                                  });
+                                                  showToast(context, 'Viaje finalizado');
+                                                  print('se inserto bien la actualizacion');
+                                                }
+                                              });
+                                              print('presionaste el finalizar viaje: ' + _kmFinal!.text);
+                                            }
+                                          }//else
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: DARK_BLUE_COLOR,
+                                        ),
+                                        child: Text('Finalizar Viaje')
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20,),
+                              ]
+                          );
+                        }//fin if tipos de viajes
+                        else{
+                          print('tipo sencillo' + widget.detalles.tipo.toString());
+                          return Column(
+                              children: <Widget>[
+                                Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 25, right: 25, bottom: 1.0),
+                                      child: Container(
+                                        child: TextField(
+                                            textInputAction: TextInputAction.next,
+                                            decoration:  InputDecoration(
+                                              enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.blueGrey),
+                                              ),
+                                              // border: OutlineInputBorder(),
+                                              labelText: '  Kilometraje final',
+                                              labelStyle: TextStyle(color: Colors.blueGrey),
+                                            ),
+                                            controller: _kmFinal,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 50,
+                                            maxLines: null,
+                                            textAlign: TextAlign.left
+                                        ),
+                                        width: MediaQuery.of(context).size.width*.70,
+                                      ),
+                                    )
+                                ),
+                                /*
                               Container(
                                 width: MediaQuery.of(context).size.width*.70,
                                 child: SearchChoices.single(
@@ -250,8 +450,8 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                               ),
                               */
 
-                              Container(
-                                child: TextField(
+                                Container(
+                                  child: TextField(
                                     decoration:  InputDecoration(
                                       enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(color: Colors.blueGrey),
@@ -262,107 +462,109 @@ class _viajesDetailsPageState extends State<viajesDetails> {
                                     controller: _pasajerosF,
                                     keyboardType: TextInputType.number,
                                     maxLength: 2,
-                                   // maxLines: null,
+                                    // maxLines: null,
                                     textAlign: TextAlign.left,
-                                  textInputAction: TextInputAction.next,
-                                ),
-                                width: MediaQuery.of(context).size.width*.70,
-                              ),
-                              Container(
-                                child: TextField(
-                                    decoration:  InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.blueGrey),
-                                      ),
-                                      labelText: '  Comentarios',
-                                      labelStyle: TextStyle(color: Colors.blueGrey ),
-                                    ),
-                                    controller: _comentariosF,
-                                    keyboardType: TextInputType.text,
-                                    maxLength: 500,
-                                    maxLines: null,
-                                    textAlign: TextAlign.left
-                                ),
-                                width: MediaQuery.of(context).size.width*.70,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  ElevatedButton(
-                                      onPressed: () async{
-                                        print('presionao');
-                                        var kmf = int.parse(_kmFinal!.text != '' ? _kmFinal!.text : '0');
-                                        var parse = int.parse(_pasajerosF!.text != '' ? _pasajerosF!.text : '0');
-
-                                        if(kmf == 0 || _pasajerosF!.text != '' ){
-                                          print('mayor a 40');
-                                          showSimpleDialog(context, ' Alerta', 'Los campos de kilometraje y pasajeros no pueden quedar incompletos');
-                                        }
-                                        else if(parse > 40){
-                                          print('mayor a 40');
-                                          showSimpleDialog(context, ' Alerta', 'El número de pasajeros debe ser menor a 40');
-
-                                        }else{
-                                          print('menor a 40');
-                                          //showSimpleDialog(context, 'Alerta', 'menor');
-                                          //_redirect();
-                                        //}//else
-
-
-                                        //Navigator.of(context).pop();
-                                        //UPDATE MySQL
-                                        update_kFin(widget.info.id.toString(), widget.detalles.viajesid.toString(), _kmFinal!.text, DateTime.now().toString(), _pasajerosF!.text, _comentariosF!.text).then((res){
-                                          print('se registro correctamente :' + DateTime.now().toString());
-                                          setState(() {
-                                            widget.detalles.horario_final= DateTime.now().toString();
-                                            widget.detalles.kil_fin= _kmFinal!.text;
-                                          });
-                                        });
-                                        //UPDATE LOCAL
-                                        ViajeD viajeD = ViajeD(
-                                            viajesid: widget.detalles.viajesid,
-                                            viaje_id:widget.detalles.viaje_id,
-                                            nombre_ruta: widget.detalles.nombre_ruta,
-                                            fecha: widget.detalles.fecha,
-                                            hora_prev: widget.detalles.hora_prev,
-                                            vehiculo_id: widget.detalles.vehiculo_id,
-                                            ruta_id: widget.detalles.ruta_id,
-                                            cliente:widget.detalles.cliente,
-                                            comentario: widget.detalles.comentario,
-                                            centro: widget.detalles.centro,
-                                            horario_inicio: widget.detalles.horario_inicio,
-                                            horario_final: DateTime.now().toString(),
-                                            kil_ini: widget.detalles.kil_ini,
-                                            kil_fin: _kmFinal!.text,
-                                            vehiculosid: widget.detalles.vehiculosid,
-                                            idcliente: widget.detalles.idcliente
-                                        );
-                                        Controllerconsulta().updateDataTravel(viajeD).then((value) {
-                                          showSimpleDialog(context, 'Alerta', 'Cambio exitoso');
-                                          _redirect();
-                                          print('valor en update'+value.toString());
-                                          if(value>0){
-                                            setState(() {
-                                              widget.detalles.horario_final= DateTime.now().toString();
-                                              widget.detalles.kil_fin= _kmFinal!.text;
-                                            });
-                                            print('se inserto bien la actualizacion');
-                                          }
-                                        });
-                                        print('presionaste el finalizar viaje: ' + _kmFinal!.text);
-
-                                        }//else
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: DARK_BLUE_COLOR,
-                                      ),
-                                      child: Text('Finalizar Viaje')
+                                    textInputAction: TextInputAction.next,
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 20,),
-                        ]
-                        );
+                                  width: MediaQuery.of(context).size.width*.70,
+                                ),
+                                Container(
+                                  child: TextField(
+                                      decoration:  InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.blueGrey),
+                                        ),
+                                        labelText: '  Comentarios',
+                                        labelStyle: TextStyle(color: Colors.blueGrey ),
+                                      ),
+                                      controller: _comentariosF,
+                                      keyboardType: TextInputType.text,
+                                      maxLength: 500,
+                                      maxLines: null,
+                                      textAlign: TextAlign.left
+                                  ),
+                                  width: MediaQuery.of(context).size.width*.70,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    ElevatedButton(
+                                        onPressed: () async{
+                                          if(_pasajerosF!.text == '' || _kmFinal!.text == ''){
+                                            showToast(context, 'Complete los camposde kilometraje y pasajeros para poder finalizar su viaje',);
+                                          }else {
+                                            var parse = int.parse(_pasajerosF!.text);
+                                            if (parse > 40) {
+                                              print('mayor a 40');
+                                              showSimpleDialog(context, ' Alerta', 'El número de pasajeros debe ser menor a 40');
+                                            } else {
+                                              print('menor a 40');
+                                              //showSimpleDialog(context, 'Alerta', 'menor');
+                                              //_redirect();
+                                              //}//else
+                                              //Navigator.of(context).pop();
+                                              //UPDATE MySQL
+                                              update_kFin(widget.info.id.toString(), widget.detalles.viajesid.toString(),
+                                                  _kmFinal!.text, DateTime.now().toString(), _pasajerosF!.text,
+                                                  _comentariosF!.text, 'N/A').then((res) {
+                                                print('se registro correctamente :' + DateTime.now().toString());
+                                                setState(() {
+                                                  widget.detalles
+                                                      .horario_final =
+                                                      DateTime.now().toString();
+                                                  widget.detalles.kil_fin =
+                                                      _kmFinal!.text;
+                                                });
+                                              });
+                                              //UPDATE LOCAL
+                                              ViajeD viajeD = ViajeD(
+                                                  viajesid: widget.detalles.viajesid,
+                                                  viaje_id: widget.detalles.viaje_id,
+                                                  nombre_ruta: widget.detalles.nombre_ruta,
+                                                  fecha: widget.detalles.fecha,
+                                                  hora_prev: widget.detalles.hora_prev,
+                                                  vehiculo_id: widget.detalles.vehiculo_id,
+                                                  ruta_id: widget.detalles.ruta_id,
+                                                  cliente: widget.detalles.cliente,
+                                                  comentario: widget.detalles.comentario,
+                                                  centro: widget.detalles.centro,
+                                                  horario_inicio: widget.detalles.horario_inicio,
+                                                  horario_final: DateTime.now().toString(),
+                                                  kil_ini: widget.detalles.kil_ini,
+                                                  kil_fin: _kmFinal!.text,
+                                                  vehiculosid: widget.detalles.vehiculosid,
+                                                  idcliente: widget.detalles.idcliente,
+                                                  tipo: widget.detalles.tipo
+                                              );
+                                              Controllerconsulta().updateDataTravel(viajeD).then((value) {
+                                                showSimpleDialog(context, 'Alerta', 'Cambio exitoso');
+                                                _redirect();
+                                                print('valor en update' + value.toString());
+                                                if (value > 0) {
+                                                  setState(() {
+                                                    widget.detalles.horario_final = DateTime.now().toString();
+                                                    widget.detalles.kil_fin = _kmFinal!.text;
+                                                  });
+                                                  print('se inserto bien la actualizacion');
+                                                  showToast(context, 'Viaje finalizado');
+                                                }
+                                              });
+                                              print('presionaste el finalizar viaje: ' + _kmFinal!.text);
+                                            }
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: DARK_BLUE_COLOR,
+                                        ),
+                                        child: Text('Finalizar Viaje')
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20,),
+                              ]
+                          );
+                        }
+
                       }else{
                         return  ListView(
                           children: <Widget>[
