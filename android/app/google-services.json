@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "623240177953",
+    "firebase_url": "https://mandado-45131.firebaseio.com",
+    "project_id": "mandado-45131",
+    "storage_bucket": "mandado-45131.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623240177953:android:2369870ee83f46d754f660",
+        "android_client_info": {
+          "package_name": "mgsi.choferes.choferes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTU3PSmd90foZmqYFu9grCEKyQgbRyydQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "623240177953-rht70gcmsavaaak7kvdghbi595k7urj9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "inteco.mandadoCliente"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623240177953:android:8e557909a07877f554f660",
+        "android_client_info": {
+          "package_name": "mgsi.mandado_cliente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTU3PSmd90foZmqYFu9grCEKyQgbRyydQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "623240177953-rht70gcmsavaaak7kvdghbi595k7urj9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "inteco.mandadoCliente"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623240177953:android:137c4b29570d334254f660",
+        "android_client_info": {
+          "package_name": "mgsi.mandado_repartidor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTU3PSmd90foZmqYFu9grCEKyQgbRyydQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623240177953-ofsmdbk3gkfgjcp01nhbhcommb5dnvmk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "623240177953-rht70gcmsavaaak7kvdghbi595k7urj9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "inteco.mandadoCliente"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
